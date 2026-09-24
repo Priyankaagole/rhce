@@ -1,0 +1,38 @@
+---
+- name: Install Apache
+  ansible.builtin.dnf:
+    name: httpd
+    state: present
+
+- name: Enable and Start Apache
+  ansible.builtin.service:
+    name: httpd
+    state: started
+    enabled: true
+
+- name: Install Firewall
+  ansible.builtin.dnf:
+    name: firewalld
+    state: present
+
+- name: Enable and start firewalld
+  ansible.builtin.service:
+    name: firewalld
+    state: reloaded
+    enabled: true
+
+- name: Allow HTTP service through firewalld
+  ansible.posix.firewalld:
+    service: http
+    permanent: true
+    immediate: true
+    state: enabled
+
+- name: Deploy Apache Index Page
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    owner: root
+    group: root
+    mode: "0644"
+
