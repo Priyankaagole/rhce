@@ -1,0 +1,23 @@
+---
+- name: configure EX294 repositories
+  hosts: all
+  become: true  
+
+  tasks:
+    - name: Configure EX294 AppStream repositories
+      ansible.builtin.yum_repository:
+        name: EX294
+        description: Ex294 AppStream
+        baseurl: http://content.example.com/rhel10.0/x86_64/dvd/AppStream
+        enabled: true
+        gpgcheck: true
+        gpgkey: http://content.example.com/rhel10.0/x86_64/dvd/GPGKEY-redhat-release
+
+    - name: Configure EX294 BaseOS repositories
+      ansible.builtin.yum_repository:
+        name: EX294
+        description: Ex294 BaseOS
+        baseurl: http://content.example.com/rhel10.0/x86_64/dvd/BaseOS
+        enabled: true
+        gpgcheck: true
+        gpgkey: http://content.example.com/rhel10.0/x86_64/dvd/GPGKEY-redhat-release
