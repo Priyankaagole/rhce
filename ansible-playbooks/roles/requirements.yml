@@ -1,0 +1,4 @@
+---
+balancers:
+  - name: phpinfo 
+  - name: haproxy
