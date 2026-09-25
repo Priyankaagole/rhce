@@ -1,0 +1,33 @@
+---
+- name: Configure /etc/issue
+  hosts: all
+  become: true
+
+  tasks:
+
+    - name: Set Production issue text
+      ansible.builtin.copy:
+        content: "Production"
+        dest: /etc/issue
+        owner: root
+        group: root
+        mode: "0644"
+      when: "'prod'in group_names"
+
+    - name: Set Development issue text
+      ansible.builtin.copy:
+        content: "Development"
+        dest: /etc/issue
+        owner: root
+        group: root
+        mode: "0644"
+      when: "'dev' in group_names"
+
+    - name: Set Test issue text
+      ansible.builtin.copy:
+        content: "Test"
+        dest: /etc/issue
+        owner: root
+        group: root
+        mode: "0644"
+      when: "'test' in group_names"  
