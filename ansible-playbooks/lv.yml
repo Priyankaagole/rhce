@@ -1,0 +1,47 @@
+---
+- name: Confugure research logical volume
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Check whether the volume group exists
+      ansible.builtin.command: vgs research
+      register: research_vg
+      changed_when: false
+      failed_when: false
+
+    - name: Stop when research volume group does not exists
+      ansible.builtin.fail:
+        msg: "volume group does not exist"
+      when: research_vg.rc != 0
+
+    - name: Try to create the 1500 MB logical volume
+      block:
+        - name: Create 1500 MB logical volume
+          community.general.lvol:
+            vg: research
+            lv: data
+            size: 1500m
+            state: present
+
+        - name: Format data as ext4
+          community.general.filesystem:
+            fstype: ext4
+            dev: /dev/research/data
+
+      rescue:
+        - name: Report failed 1500 MB LV create
+          ansible.builtin.debug:
+            msg: "Logical Volume of that size cannot be created"
+
+        - name: Create fallback 800 MB logical volume
+          community.general.lvol:
+            vg: research
+            lv: data
+            size: 800m
+            state: present
+
+        - name: Format fallback as ext4
+          community.general.filesystem:
+            fstype: ext4
+            dev: /dev/research/data
