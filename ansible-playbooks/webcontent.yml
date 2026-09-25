@@ -1,0 +1,32 @@
+---
+- name: Configure Development webcontent
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Ensure webdev group exists
+      ansible.builtin.group:
+        name: webdev
+        state: present
+
+    - name: Create Apache webcontent directory
+      ansible.builtin.file:
+        path: /var/www/html/webdev
+        state: directory
+        owner: root
+        group: webdev
+        mode: "2775"
+
+    - name: Create Development index page
+      ansible.builtin.copy:
+        content: "Development"
+        dest: /var/www/html/webdev/index.html
+        owner: root
+        group: webdev
+        mode: "0644"
+
+    - name: Create a symbolic link at /webdev
+      ansible.builtin.file:
+        src: /var/www/html/webdev
+        dest: /webdev
+        state: link    
