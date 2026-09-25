@@ -1,0 +1,14 @@
+---
+- name: Gather all facts
+  hosts: all
+  become: true
+
+- name: Generate a host failed
+  hosts: dev
+  become: true
+
+  tasks:
+    - name: Deploy a host failed
+      ansible.builtin.template:
+        src: hosts.j2
+        dest: /etc/myhosts
